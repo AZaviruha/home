@@ -1,9 +1,9 @@
 ;; Custom Emacs
 
 ;; Preparation
-;; cd ~/.emacs.d/vendor/tern/
-;; sudo npm i
-;; sudo ln -s -T /home/azaviruha/.emacs.d/vendor/tern/bin/tern /usr/bin/tern
+;; sudo npm i -g tern
+;; sudo npm i -g jscs
+;; sudo npm i -g esprima-fb
 
 (load "~/.emacs.d/themes.el")
 
@@ -47,9 +47,9 @@
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 (global-auto-complete-mode t)
-;; ;; Start auto-completion after 2 characters of a word
+;; Start auto-completion after 2 characters of a word
 (setq ac-auto-start 2)
-;; ;; case sensitivity is important when finding matches
+;; case sensitivity is important when finding matches
 (setq ac-ignore-case nil)
 
 
@@ -57,14 +57,15 @@
 ; =========================== JavaScript =========================== ;
 ; ================================================================== ;
 (add-hook 'js-mode-hook  'js2-minor-mode)
-;; (add-hook 'js2-mode-hook 'ac-js2-mode)
 (setq js2-highlight-level 3)
+
+;; ----------------------------------------------------------------- ;
+;; Tern
 (add-hook 'js-mode-hook (lambda () (tern-mode t)))
 (eval-after-load 'tern-mode
    '(progn
       (require 'tern-auto-complete)
       (tern-ac-setup)))
-
 
 (evil-define-key 'insert tern-mode-keymap 
   (kbd "M-.")   'tern-find-definition 
@@ -86,9 +87,29 @@
 				 (interactive)
 				 (tern-ac-setup)
 				 (tern-ac-complete)))
+;; ----------------------------------------------------------------- ;
 
+;; ----------------------------------------------------------------- ;
+;; Flycheck JSCS
+(flycheck-def-config-file-var flycheck-jscs javascript-jscs "~/.emacs.d/.jscs"
+  :safe #'stringp)
+(flycheck-define-checker javascript-jscs
+  "A JavaScript code style checker.
+   See URL `https://github.com/mdevils/node-jscs'."
+  :command ("jscs" "--reporter" "checkstyle"
+            (config-file "--config" flycheck-jscs)
+            source)
+  :error-parser flycheck-parse-checkstyle
+  :modes (js-mode js2-mode js3-mode)
+  :next-checkers (javascript-jshint))
+ 
+(defun jscs-enable () (interactive)
+       (add-to-list 'flycheck-checkers 'javascript-jscs))
+ 
+(defun jscs-disable () (interactive)
+       (setq flycheck-checkers (remove 'javascript-jscs flycheck-checkers)))
 
+(add-hook 'js-mode-hook (lambda () (interactive) 
+		   (jscs-enable) (flycheck-mode t)))
+;; ----------------------------------------------------------------- ;
 
-;; (define-key evil-insert-state-map (kbd "M-.") 'tern-find-definition)
-;; (define-key evil-motion-state-map (kbd "M-.") 'tern-find-definition)
-;; (define-key evil-normal-state-map (kbd "M-.") 'tern-find-definition)

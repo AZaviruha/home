@@ -1,0 +1,17 @@
+
+;; ----- smex-history -----
+(
+ eval-current-buffer
+ evil-mode
+ cd
+ 5x5
+ arp
+ dbx
+ dig
+)
+
+;; ----- smex-data -----
+(
+ (evil-mode . 1)
+ (eval-current-buffer . 1)
+)

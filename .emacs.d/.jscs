@@ -1,0 +1,9 @@
+{
+	"esprima": "esprima-fb",
+	"fileExtensions": [".js", ".jsx"],
+	"disallowImplicitTypeConversion": [ "numeric", "boolean", "binary", "string" ],
+	"disallowCommaBeforeLineBreak": true,
+	"requireAlignedObjectValues": "ignoreFunction",
+	"disallowOperatorBeforeLineBreak": ["+", "."],
+	"validateIndentation": 4
+}

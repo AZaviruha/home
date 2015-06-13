@@ -18,4 +18,3 @@
 
 ; ========== User settings ===========;
 (load "~/.emacs.d/user.el")
-
